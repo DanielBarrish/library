@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Library</title>
+</head>
+
+<body>
+    <h1>Library</h1>
+    <div id="newbook">
+        <button id="btnnewbook">NEW BOOK</button>
+    </div>
+    <div id="content"> </div>
+
+
+
+
+
+
+    <style>
+        h1 {
+            font-size: 40px;
+            text-align: center;
+        }
+
+        #content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #btnnewbook {
+            font-weight: bold;
+            border-radius: 30px;
+            width: 200px;
+            height: 100px;
+            color: navy;
+            background-color: lightblue;
+            border: 0px;
+            font-size: 30px;
+        }
+
+        #btnnewbook:hover {
+            transform: scale(1.05);
+        }
+        
+        #btnnewbook:active {
+            transform: scale(0.95);
+        }
+
+        #btnnewbook:focus {
+            outline: 0px;
+        }
+
+        .removebutton {
+            color: white;
+            font-weight: bold;
+            background-color: firebrick;
+            height: 40px;
+            float: right;
+            border-color: firebrick;
+            border-radius: 15px;
+            box-shadow: 0px;
+            margin-left: 100px;
+        }
+
+        .removebutton:hover {
+            transform: scale(1.05);
+        }
+
+        .readbutton {
+            color: white;
+            font-weight: bold;
+            background-color: purple;
+            height: 40px;
+            justify-self: right;
+            border-color: purple;
+            border-radius: 15px;
+            box-shadow: 0px;
+        }
+
+        .readbutton:focus {
+            outline: 0px;
+        }
+
+        .readbutton:hover {
+            transform: scale(1.05);
+        }
+
+        .readbutton:active {
+            transform: scale(0.95);
+        }
+
+
+
+        
+
+        #newbook {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .bookcard {
+            background-color: lightblue;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 30px;
+            box-shadow: 5px 10px lightgrey;
+            width: 400px;
+            color: navy;
+        }
+        .bookcard:hover {
+            transform: scale(1.05);
+        }
+    </style>
+
+
+
+    <script>
+        let myLibrary = [];
+        let idCounter = 0;
+
+        function Book(title, author, pages, read) {
+            //constructor
+            this.title = title; //str
+            this.author = author; //str
+            this.pages = pages; //int
+            this.read = read; //boolean
+
+        }
+        /*
+                myLibrary.push(Book("Hobbit", "Tolkien", 1000, true));
+                myLibrary.push(Book("HDM", "Pullman", 3000, true));
+                myLibrary.push(Book("The Notebook", "Dunno", 200, false));*/
+        myLibrary.push(new Book("Hunger Games", "Collins", 600, true));
+        myLibrary.push(new Book("The Notebook", "Dunno", 200, false));
+        myLibrary.push(new Book("HDM", "Pullman", 3000, true));
+
+        Book.prototype.info = function () {
+            if (this.read) {
+                return this.title + " by " + this.author + ", " + this.pages + " pages, " + "read";
+            } else {
+                return this.title + " by " + this.author + ", " + this.pages + " pages, " + "not read yet";
+            }
+        }
+
+        function addBooktoLibrary(book) {
+            myLibrary.push(book);
+        }
+
+        let table = document.createElement("table");
+
+
+
+
+        //console.log(hungerGames.info());
+
+        newBookButton = document.getElementById("newbook");
+        newBookButton.addEventListener('click', () => {
+            let title = prompt("What is the book's title?");
+            let author = prompt("Who is the book's author?");
+            let pages = parseInt(prompt("How many pages is the book?"));
+            let read = ("true" == prompt("Have you read the book (true/false)?"));
+            newBook = new Book(title, author, pages, read);
+            myLibrary.push(newBook);
+            createBookCard(newBook, idCounter);
+
+        });
+
+        bookGrid = document.getElementById("content");
+
+        function createBookCard(book, id) {
+            idCounter++;
+
+            let bookCard = document.createElement("div");
+            bookCard.className = "bookcard";
+            bookCard.id = "div" + id;
+            let title = document.createElement("h3");
+            let author = document.createElement("h3");
+            let pages = document.createElement("h3");
+            let read = document.createElement("h3");
+            read.id = "read" + id;
+
+            let readButton = document.createElement("button");
+            readButton.textContent = "Read/Unread";
+            readButton.className = "readbutton";
+            readButton.id = "readbtn" + id;
+
+            let removeButton = document.createElement("button");
+            removeButton.textContent = "Remove Book";
+            removeButton.className = "removebutton";
+
+
+
+            title.textContent = "Title: " + book.title;
+            author.textContent = "Author: " + book.author;
+            pages.textContent = "Pages: " + book.pages;
+            if (book.read) {
+                read.textContent = "Read";
+            } else {
+                read.textContent = "Unread";
+            }
+            bookCard.appendChild(title);
+            bookCard.appendChild(author);
+            bookCard.appendChild(pages);
+            bookCard.appendChild(read);
+            bookCard.appendChild(readButton);
+            bookCard.appendChild(removeButton);
+            bookGrid.appendChild(bookCard);
+
+            readButton.addEventListener('click', () => {
+                myLibrary[id].read = !(myLibrary[id].read);
+                if (myLibrary[id].read) {
+                    document.getElementById("read" + id).textContent = "Read";
+                } else {
+                    document.getElementById("read" + id).textContent = "Unread";
+                }
+            });
+
+            removeButton.addEventListener('click', () => {
+                delete myLibrary[id];
+                bookGrid.removeChild(bookCard);
+            });
+
+
+        }
+
+        function printLibrary() {
+            let str = "";
+            for (i = 0; i < myLibrary.length; i++) {
+                createBookCard(myLibrary[i], idCounter);
+            }
+
+
+        }
+
+        printLibrary();
+
+        readButtons = document.querySelectorAll("button");
+        activateButtons();
+
+        function activateButtons() {
+            readButtons.forEach((button) => {
+                if (button.className == "readbutton") {
+
+                }
+
+            });
+        }
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
